@@ -1,4 +1,3 @@
-import json
 import urllib3
 from datetime import datetime
 import os
