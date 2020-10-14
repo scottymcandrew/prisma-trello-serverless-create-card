@@ -1,3 +1,4 @@
+import json
 import urllib3
 from datetime import datetime
 import os
@@ -21,10 +22,12 @@ def prisma_trello_card(request):
         now = datetime.now()
         date_time = now.strftime("%Y/%m/%d, %H:%M:%S")
     except:
-        # Where the JSON sent in the request does not match the expected format (e.g. an API test),
-        # just respond with 200 to prove function runs.
         return {
-            'statusCode': 200
+            "statusCode": 200,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "body": request_json
         }
 
     # name given to the card (title)
