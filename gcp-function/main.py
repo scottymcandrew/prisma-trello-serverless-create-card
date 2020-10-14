@@ -21,6 +21,8 @@ def prisma_trello_card(request):
         now = datetime.now()
         date_time = now.strftime("%Y/%m/%d, %H:%M:%S")
     except:
+        # Reflect the request back as a response. This will greatly aid troubleshooting...
+        # so one can analyse the JSON structure against what is expected.
         return {
             "statusCode": 200,
             "headers": {
@@ -42,6 +44,7 @@ def prisma_trello_card(request):
         'key': os.environ.get("key"),
         'token': os.environ.get("token"),
         'idList': os.environ.get("idList"),
+        'pos': 'top',
         'name': name,
         'desc': desc
     }
