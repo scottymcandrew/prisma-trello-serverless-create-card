@@ -1,9 +1,28 @@
 import urllib3
 from datetime import datetime
 import os
+from google.cloud import secretmanager
 
 
 def prisma_trello_card(request):
+    # Start by grabbing the required secrets from GCP Secrets Manager
+    secret_client = secretmanager.SecretManagerServiceClient()
+    secrets_dict = {
+        "trello-key": "trello-key",
+        "trello-token": "trello-token",
+        "trello-idlist": "trello-idlist"
+    }
+
+    # Get the current Project ID using reserved env variable. This should be changed if secrets exist in diff project
+    # GCP_PROJECT appears to only work with some code versions (e.g. Python 3.7 and NOT 3.8!
+    # project_id = os.environ.get("GCP_PROJECT")
+    project_id = os.environ.get("MY_SECRETS_PROJECT")
+
+    for x in secrets_dict:
+        secret_request = {"name": f"projects/{project_id}/secrets/{x}/versions/latest"}
+        secret_response = secret_client.access_secret_version(secret_request)
+        secrets_dict[x] = secret_response.payload.data.decode("UTF-8")
+
     http = urllib3.PoolManager()
     url = "https://api.trello.com/1/cards"
     request_json = request.get_json("body")
@@ -23,6 +42,7 @@ def prisma_trello_card(request):
     except:
         # Reflect the request back as a response. This will greatly aid troubleshooting...
         # so one can analyse the JSON structure against what is expected.
+        # This needs to be a 200 response so it will pass the Prisma integration test
         return {
             "statusCode": 200,
             "headers": {
@@ -41,9 +61,9 @@ def prisma_trello_card(request):
            + "Policy description: " + policy_desc + "\n"
 
     query = {
-        'key': os.environ.get("key"),
-        'token': os.environ.get("token"),
-        'idList': os.environ.get("idList"),
+        'key': secrets_dict["trello-key"],
+        'token': secrets_dict["trello-token"],
+        'idList': secrets_dict["trello-idlist"],
         'pos': 'top',
         'name': name,
         'desc': desc
