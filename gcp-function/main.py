@@ -8,9 +8,10 @@ def prisma_trello_card(request):
     # Start by grabbing the required secrets from GCP Secrets Manager
     secret_client = secretmanager.SecretManagerServiceClient()
     secrets_dict = {
-        "trello-key": "trello-key",
-        "trello-token": "trello-token",
-        "trello-idlist": "trello-idlist"
+        # Use ENV variables to grab the name of the GCP secret and initialise a dict
+        os.environ.get("TRELLO_KEY_SECRET"): "tbc",
+        os.environ.get("TRELLO_TOKEN_SECRET"): "tbc",
+        os.environ.get("TRELLO_IDLIST_SECRET"): "tbc"
     }
 
     # Get the current Project ID using reserved env variable. This should be changed if secrets exist in diff project
