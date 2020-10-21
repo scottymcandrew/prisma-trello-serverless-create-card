@@ -27,6 +27,8 @@ def prisma_trello_card(request):
     http = urllib3.PoolManager()
     url = "https://api.trello.com/1/cards"
     request_json = request.get_json("body")
+    if isinstance(request_json, list):
+        print("WE HAVE FOUND AN ARRAY!")
 
     # Gather key pieces of info from Prisma Alert JSON
     try:
