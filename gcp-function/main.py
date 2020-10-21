@@ -27,34 +27,55 @@ def prisma_trello_card(request):
     http = urllib3.PoolManager()
     url = "https://api.trello.com/1/cards"
     request_json = request.get_json("body")
-    if isinstance(request_json, list):
-        print("WE HAVE FOUND AN ARRAY!")
-    else:
-        print("THIS IS NOT AN ARRAY!")
+
+    if isinstance(request_json, list):   # If received body is an array of JSON objects
+        try:
+            account_name = request_json[0]["accountName"]
+            severity = request_json[0]["severity"]
+            rule_name = request_json[0]["alertRuleName"]
+            resource_id = request_json[0]["resourceId"]
+            policy_desc = request_json[0]["policyDescription"]
+            cloud_resource_type = request_json[0]["resourceCloudService"]
+            cloud_type = request_json[0]["cloudType"]
+            prisma_alert_url = request_json[0]["callbackUrl"]
+            now = datetime.now()
+            date_time = now.strftime("%Y/%m/%d, %H:%M:%S")
+        except:
+            # Reflect the request back as a response. This will greatly aid troubleshooting...
+            # so one can analyse the JSON structure against what is expected.
+            # This needs to be a 200 response so it will pass the Prisma integration test
+            return {
+                "statusCode": 200,
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "body": request_json
+            }
+    else:   # If received body is a single JSON object
+        try:
+            account_name = request_json["accountName"]
+            severity = request_json["severity"]
+            rule_name = request_json["alertRuleName"]
+            resource_id = request_json["resourceId"]
+            policy_desc = request_json["policyDescription"]
+            cloud_resource_type = request_json["resourceCloudService"]
+            cloud_type = request_json["cloudType"]
+            prisma_alert_url = request_json["callbackUrl"]
+            now = datetime.now()
+            date_time = now.strftime("%Y/%m/%d, %H:%M:%S")
+        except:
+            # Reflect the request back as a response. This will greatly aid troubleshooting...
+            # so one can analyse the JSON structure against what is expected.
+            # This needs to be a 200 response so it will pass the Prisma integration test
+            return {
+                "statusCode": 200,
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "body": request_json
+            }
 
     # Gather key pieces of info from Prisma Alert JSON
-    try:
-        account_name = request_json["accountName"]
-        severity = request_json["severity"]
-        rule_name = request_json["alertRuleName"]
-        resource_id = request_json["resourceId"]
-        policy_desc = request_json["policyDescription"]
-        cloud_resource_type = request_json["resourceCloudService"]
-        cloud_type = request_json["cloudType"]
-        prisma_alert_url = request_json["callbackUrl"]
-        now = datetime.now()
-        date_time = now.strftime("%Y/%m/%d, %H:%M:%S")
-    except:
-        # Reflect the request back as a response. This will greatly aid troubleshooting...
-        # so one can analyse the JSON structure against what is expected.
-        # This needs to be a 200 response so it will pass the Prisma integration test
-        return {
-            "statusCode": 200,
-            "headers": {
-                "Content-Type": "application/json"
-            },
-            "body": request_json
-        }
 
     # name given to the card (title)
     name = 'Prisma Alert: ' + "| " + date_time + " | " + resource_id + " " + rule_name
