@@ -1,8 +1,10 @@
 # prisma-trello-lambda-create-card
 
-This lambda Python script is to allow the sending of Prisma Cloud alerts (in JSON format) to Trello to create a card.
+These Python scripts are to allow the sending of Prisma Cloud alerts (in JSON format) to Trello to create a card.
 
 This function is required since Trello can not ingest JSON.
+
+In this current version of the repo, there is a function for Lambda and GCP Functions.
 
 # Setup instructions
 
