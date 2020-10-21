@@ -7,4 +7,4 @@ steps:
   dir: 'gcp-function'
 - name: 'gcr.io/cloud-builders/gcloud'
   args: ['functions', 'deploy', 'prisma-trello-card', '--trigger-http', '--runtime', 'python38', '--entry-point', 'prisma_trello_card']
-  dir: 'function/dir/from/repo/root'
+  dir: 'gcp-function'
