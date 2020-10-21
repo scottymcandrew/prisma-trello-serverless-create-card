@@ -29,6 +29,8 @@ def prisma_trello_card(request):
     request_json = request.get_json("body")
     if isinstance(request_json, list):
         print("WE HAVE FOUND AN ARRAY!")
+    else:
+        print("THIS IS NOT AN ARRAY!")
 
     # Gather key pieces of info from Prisma Alert JSON
     try:
