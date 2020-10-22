@@ -19,6 +19,9 @@ def prisma_trello_card(request):
     # project_id = os.environ.get("GCP_PROJECT")
     project_id = os.environ.get("MY_SECRETS_PROJECT")
 
+    now = datetime.now()
+    date_time = now.strftime("%Y/%m/%d, %H:%M:%S")
+
     for x in secrets_dict:
         secret_request = {"name": f"projects/{project_id}/secrets/{x}/versions/latest"}
         secret_response = secret_client.access_secret_version(secret_request)
@@ -30,16 +33,40 @@ def prisma_trello_card(request):
 
     if isinstance(request_json, list):   # If received body is an array of JSON objects
         try:
-            account_name = request_json[0]["accountName"]
-            severity = request_json[0]["severity"]
-            rule_name = request_json[0]["alertRuleName"]
-            resource_id = request_json[0]["resourceId"]
-            policy_desc = request_json[0]["policyDescription"]
-            cloud_resource_type = request_json[0]["resourceCloudService"]
-            cloud_type = request_json[0]["cloudType"]
-            prisma_alert_url = request_json[0]["callbackUrl"]
-            now = datetime.now()
-            date_time = now.strftime("%Y/%m/%d, %H:%M:%S")
+            for x in range(len(request_json)):
+                account_name = request_json[x]["accountName"]
+                severity = request_json[x]["severity"]
+                rule_name = request_json[x]["alertRuleName"]
+                resource_id = request_json[x]["resourceId"]
+                policy_desc = request_json[x]["policyDescription"]
+                cloud_resource_type = request_json[x]["resourceCloudService"]
+                cloud_type = request_json[x]["cloudType"]
+                prisma_alert_url = request_json[x]["callbackUrl"]
+
+                # Gather key pieces of info from Prisma Alert JSON
+                # name given to the card (title)
+                name = 'Prisma Alert: ' + "| " + date_time + " | " + resource_id + " " + rule_name
+
+                # String for the card body
+                desc = 'Alert details \n' + "Link to alert: " + prisma_alert_url + "\n" \
+                       + "Account name: " + account_name + "\n" \
+                       + "Cloud platform: " + cloud_type + "\n" + "Resource type: " + cloud_resource_type + "\n" \
+                       + "Policy description: " + policy_desc + "\n"
+
+                query = {
+                    'key': secrets_dict[os.environ.get("TRELLO_KEY_SECRET")],
+                    'token': secrets_dict[os.environ.get("TRELLO_TOKEN_SECRET")],
+                    'idList': secrets_dict[os.environ.get("TRELLO_IDLIST_SECRET")],
+                    'pos': 'top',
+                    'name': name,
+                    'desc': desc
+                }
+
+                r = http.request(
+                    'POST',
+                    url,
+                    fields=query)
+
         except:
             # Reflect the request back as a response. This will greatly aid troubleshooting...
             # so one can analyse the JSON structure against what is expected.
@@ -61,8 +88,30 @@ def prisma_trello_card(request):
             cloud_resource_type = request_json["resourceCloudService"]
             cloud_type = request_json["cloudType"]
             prisma_alert_url = request_json["callbackUrl"]
-            now = datetime.now()
-            date_time = now.strftime("%Y/%m/%d, %H:%M:%S")
+
+            # Gather key pieces of info from Prisma Alert JSON
+            # name given to the card (title)
+            name = 'Prisma Alert: ' + "| " + date_time + " | " + resource_id + " " + rule_name
+
+            # String for the card body
+            desc = 'Alert details \n' + "Link to alert: " + prisma_alert_url + "\n" \
+                   + "Account name: " + account_name + "\n" \
+                   + "Cloud platform: " + cloud_type + "\n" + "Resource type: " + cloud_resource_type + "\n" \
+                   + "Policy description: " + policy_desc + "\n"
+
+            query = {
+                'key': secrets_dict[os.environ.get("TRELLO_KEY_SECRET")],
+                'token': secrets_dict[os.environ.get("TRELLO_TOKEN_SECRET")],
+                'idList': secrets_dict[os.environ.get("TRELLO_IDLIST_SECRET")],
+                'pos': 'top',
+                'name': name,
+                'desc': desc
+            }
+
+            r = http.request(
+                'POST',
+                url,
+                fields=query)
         except:
             # Reflect the request back as a response. This will greatly aid troubleshooting...
             # so one can analyse the JSON structure against what is expected.
@@ -74,33 +123,6 @@ def prisma_trello_card(request):
                 },
                 "body": request_json
             }
-
-    # Gather key pieces of info from Prisma Alert JSON
-
-    # name given to the card (title)
-    name = 'Prisma Alert: ' + "| " + date_time + " | " + resource_id + " " + rule_name
-
-    # String for the card body
-    desc = 'Alert details \n' + "Link to alert: " + prisma_alert_url + "\n" \
-           + "Account name: " + account_name + "\n" \
-           + "Cloud platform: " + cloud_type + "\n" + "Resource type: " + cloud_resource_type + "\n" \
-           + "Policy description: " + policy_desc + "\n"
-
-    query = {
-        'key': secrets_dict["trello-key"],
-        'token': secrets_dict["trello-token"],
-        'idList': secrets_dict["trello-idlist"],
-        'pos': 'top',
-        'name': name,
-        'desc': desc
-    }
-
-    r = http.request(
-        'POST',
-        url,
-        fields=query)
-
-    print(r.data)
 
     return {
         'statusCode': 200
