@@ -12,8 +12,5 @@ steps:
       - '_TRELLO_IDLIST_SECRET=${_TRELLO_IDLIST_SECRET}'
     dir: 'gcp-function'
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: [ 'functions', 'deploy', 'prisma-trello-card', '--trigger-http', '--runtime', 'python38', '--entry-point',
-            'prisma_trello_card', '--region', 'europe-west1',
-            '--set-env-vars=\[MY_SECRETS_PROJECT=_MY_SECRETS_PROJECT,TRELLO_KEY_SECRET=_TRELLO_KEY_SECRET,TRELLO_TOKEN_SECRET=_TRELLO_TOKEN_SECRET,TRELLO_IDLIST_SECRET=_TRELLO_IDLIST_SECRET\]'
-          ]
+    args: [ 'functions', 'deploy', 'prisma-trello-card', '--trigger-http', '--runtime', 'python38', '--entry-point', 'prisma_trello_card', '--region', 'europe-west1', '--set-env-vars=[MY_SECRETS_PROJECT=_MY_SECRETS_PROJECT,TRELLO_KEY_SECRET=_TRELLO_KEY_SECRET,TRELLO_TOKEN_SECRET=_TRELLO_TOKEN_SECRET,TRELLO_IDLIST_SECRET=_TRELLO_IDLIST_SECRET]']
     dir: 'gcp-function'
