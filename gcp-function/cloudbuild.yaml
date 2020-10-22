@@ -1,10 +1,23 @@
 steps:
-- name: 'docker.io/library/python:3.8'
-  entrypoint: /bin/sh
-  # Run pip install and pytest in the same build step
-  # (pip packages won't be preserved in future steps!)
-  args: [-c, 'pip install -r requirements.txt', '&&', 'pytest']
-  dir: 'gcp-function'
-- name: 'gcr.io/cloud-builders/gcloud'
-  args: ['functions', 'deploy', 'prisma-trello-card', '--trigger-http', '--runtime', 'python38', '--entry-point', 'prisma_trello_card']
-  dir: 'gcp-function'
+  - name: 'docker.io/library/python:3.8'
+    entrypoint: /bin/sh
+    # Run pip install and pytest in the same build step
+    # (pip packages won't be preserved in future steps!)
+    args: [ -c, 'pip install -r requirements.txt', '&&', 'pytest' ]
+    # Setting runtime env variables to trigger substitution values as defined on GCP
+    env:
+      - '_MY_SECRETS_PROJECT=${_MY_SECRETS_PROJECT}'
+      - '_TRELLO_KEY_SECRET=${_TRELLO_KEY_SECRET}'
+      - '_TRELLO_TOKEN_SECRET=${_TRELLO_TOKEN_SECRET}'
+      - '_TRELLO_IDLIST_SECRET=${_TRELLO_IDLIST_SECRET}'
+    dir: 'gcp-function'
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: [ 'functions', 'deploy', 'prisma-trello-card', '--trigger-http', '--runtime', 'python38', '--entry-point',
+            'prisma_trello_card', '--region', 'europe-west1',
+            '--set-env-vars=[MY_SECRETS_PROJECT=_MY_SECRETS_PROJECT,
+                             TRELLO_KEY_SECRET=_TRELLO_KEY_SECRET,
+                             TRELLO_TOKEN_SECRET=_TRELLO_TOKEN_SECRET
+                             TRELLO_IDLIST_SECRET=_TRELLO_IDLIST_SECRET
+                             ]'
+          ]
+    dir: 'gcp-function'
