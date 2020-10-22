@@ -32,6 +32,7 @@ def prisma_trello_card(request):
     request_json = request.get_json("body")
 
     if isinstance(request_json, list):   # If received body is an array of JSON objects
+        print("THIS IS A LIST!")
         try:
             for counter, value in enumerate(request_json):
                 print("WE ARE IN A FOR LOOP! HERE IS THE COUNTER...... ")
@@ -83,6 +84,7 @@ def prisma_trello_card(request):
                 "body": request_json
             }
     else:   # If received body is a single JSON object
+        print("THIS IS **NOT** A LIST")
         try:
             account_name = request_json["accountName"]
             severity = request_json["severity"]
