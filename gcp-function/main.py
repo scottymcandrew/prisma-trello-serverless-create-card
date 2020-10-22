@@ -30,21 +30,22 @@ def prisma_trello_card(request):
     http = urllib3.PoolManager()
     url = "https://api.trello.com/1/cards"
     request_json = request.get_json("body")
+    debug_array = []
 
     if isinstance(request_json, list):   # If received body is an array of JSON objects
         try:
-            print("THIS IS A LIST!")
-            for counter, value in enumerate(request_json):
-                print("WE ARE IN A FOR LOOP! HERE IS THE COUNTER...... ")
-                print(counter)
-                account_name = request_json[counter]["accountName"]
-                severity = request_json[counter]["severity"]
-                rule_name = request_json[counter]["alertRuleName"]
-                resource_id = request_json[counter]["resourceId"]
-                policy_desc = request_json[counter]["policyDescription"]
-                cloud_resource_type = request_json[counter]["resourceCloudService"]
-                cloud_type = request_json[counter]["cloudType"]
-                prisma_alert_url = request_json[counter]["callbackUrl"]
+            debug_array.append("THIS IS A LIST!")
+            for index, value in enumerate(request_json):
+                debug_array.append("WE ARE IN A FOR LOOP! HERE IS THE index...... ")
+                debug_array.append(index)
+                account_name = request_json[index]["accountName"]
+                severity = request_json[index]["severity"]
+                rule_name = request_json[index]["alertRuleName"]
+                resource_id = request_json[index]["resourceId"]
+                policy_desc = request_json[index]["policyDescription"]
+                cloud_resource_type = request_json[index]["resourceCloudService"]
+                cloud_type = request_json[index]["cloudType"]
+                prisma_alert_url = request_json[index]["callbackUrl"]
 
                 # Gather key pieces of info from Prisma Alert JSON
                 # name given to the card (title)
@@ -85,7 +86,7 @@ def prisma_trello_card(request):
             }
     else:   # If received body is a single JSON object
         try:
-            print("THIS IS **NOT** A LIST")
+            debug_array.append("THIS IS **NOT** A LIST")
             account_name = request_json["accountName"]
             severity = request_json["severity"]
             rule_name = request_json["alertRuleName"]
@@ -133,5 +134,6 @@ def prisma_trello_card(request):
             }
 
     return {
-        'statusCode': 200
+        'statusCode': 200,
+        'body': debug_array
     }
