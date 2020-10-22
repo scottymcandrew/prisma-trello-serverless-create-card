@@ -17,7 +17,6 @@ steps:
             '--set-env-vars=[MY_SECRETS_PROJECT=_MY_SECRETS_PROJECT,
                              TRELLO_KEY_SECRET=_TRELLO_KEY_SECRET,
                              TRELLO_TOKEN_SECRET=_TRELLO_TOKEN_SECRET,
-                             TRELLO_IDLIST_SECRET=_TRELLO_IDLIST_SECRET,
-                             ]'
+                             TRELLO_IDLIST_SECRET=_TRELLO_IDLIST_SECRET]'
           ]
     dir: 'gcp-function'
