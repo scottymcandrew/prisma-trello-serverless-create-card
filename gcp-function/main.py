@@ -33,15 +33,15 @@ def prisma_trello_card(request):
 
     if isinstance(request_json, list):   # If received body is an array of JSON objects
         try:
-            for x in range(len(request_json)):
-                account_name = request_json[x]["accountName"]
-                severity = request_json[x]["severity"]
-                rule_name = request_json[x]["alertRuleName"]
-                resource_id = request_json[x]["resourceId"]
-                policy_desc = request_json[x]["policyDescription"]
-                cloud_resource_type = request_json[x]["resourceCloudService"]
-                cloud_type = request_json[x]["cloudType"]
-                prisma_alert_url = request_json[x]["callbackUrl"]
+            for counter, value in enumerate(request_json):
+                account_name = request_json[counter]["accountName"]
+                severity = request_json[counter]["severity"]
+                rule_name = request_json[counter]["alertRuleName"]
+                resource_id = request_json[counter]["resourceId"]
+                policy_desc = request_json[counter]["policyDescription"]
+                cloud_resource_type = request_json[counter]["resourceCloudService"]
+                cloud_type = request_json[counter]["cloudType"]
+                prisma_alert_url = request_json[counter]["callbackUrl"]
 
                 # Gather key pieces of info from Prisma Alert JSON
                 # name given to the card (title)
