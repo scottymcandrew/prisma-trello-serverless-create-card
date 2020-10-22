@@ -2,6 +2,7 @@ import urllib3
 from datetime import datetime
 import os
 from google.cloud import secretmanager
+import json
 
 
 def prisma_trello_card(request):
@@ -135,5 +136,5 @@ def prisma_trello_card(request):
 
     return {
         'statusCode': 200,
-        'body': debug_array
+        'body': json.dumps(debug_array)
     }
