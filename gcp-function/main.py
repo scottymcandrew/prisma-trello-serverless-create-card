@@ -135,6 +135,9 @@ def prisma_trello_card(request):
             }
 
     return {
-        'statusCode': 200,
-        'body': json.dumps(debug_array)
+        "statusCode": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": json.dumps(debug_array)
     }
