@@ -70,6 +70,7 @@ def prisma_trello_card(request):
 
                 # r = http.request('POST', url, fields=query)
                 r = requests.post(url, params=query)
+                r.close()
 
                 # print(r.data)
 
