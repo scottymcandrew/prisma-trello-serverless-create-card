@@ -68,9 +68,10 @@ def prisma_trello_card(request):
                     'desc': desc
                 }
 
+
                 # r = http.request('POST', url, fields=query)
-                r = requests.post(url, params=query)
-                r.close()
+                # r = requests.post(url, params=query)
+                # r.close()
 
                 # print(r.data)
 
@@ -133,4 +134,4 @@ def prisma_trello_card(request):
                 "body": request_json
             }
 
-    return r.json()
+    return json.dumps(debug_array)
