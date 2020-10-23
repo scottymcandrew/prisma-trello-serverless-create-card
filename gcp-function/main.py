@@ -1,4 +1,5 @@
 import urllib3
+import requests
 from datetime import datetime
 import os
 from google.cloud import secretmanager
@@ -36,7 +37,7 @@ def prisma_trello_card(request):
         try:
             debug_array.append("THIS IS A LIST!")
             for index, value in enumerate(request_json):
-                http = urllib3.PoolManager()
+                # http = urllib3.PoolManager()
                 debug_array.append("WE ARE IN A FOR LOOP! HERE IS THE index...... ")
                 debug_array.append(index)
                 account_name = request_json[index]["accountName"]
@@ -67,12 +68,10 @@ def prisma_trello_card(request):
                     'desc': desc
                 }
 
-                r = http.request(
-                    'POST',
-                    url,
-                    fields=query)
+                # r = http.request('POST', url, fields=query)
+                requests.post(url, params=query)
 
-                print(r.data)
+                # print(r.data)
 
         except:
             # Reflect the request back as a response. This will greatly aid troubleshooting...
