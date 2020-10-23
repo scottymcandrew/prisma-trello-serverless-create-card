@@ -28,7 +28,6 @@ def prisma_trello_card(request):
         secret_response = secret_client.access_secret_version(secret_request)
         secrets_dict[x] = secret_response.payload.data.decode("UTF-8")
 
-    http = urllib3.PoolManager()
     url = "https://api.trello.com/1/cards"
     request_json = request.get_json("body")
     debug_array = []
@@ -37,6 +36,7 @@ def prisma_trello_card(request):
         try:
             debug_array.append("THIS IS A LIST!")
             for index, value in enumerate(request_json):
+                http = urllib3.PoolManager()
                 debug_array.append("WE ARE IN A FOR LOOP! HERE IS THE index...... ")
                 debug_array.append(index)
                 account_name = request_json[index]["accountName"]
@@ -87,6 +87,7 @@ def prisma_trello_card(request):
             }
     else:   # If received body is a single JSON object
         try:
+            http = urllib3.PoolManager()
             debug_array.append("THIS IS **NOT** A LIST")
             account_name = request_json["accountName"]
             severity = request_json["severity"]
