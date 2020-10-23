@@ -119,9 +119,9 @@ def prisma_trello_card(request):
             }
 
             # r = http.request('POST', url, fields=query)
-            r = requests.post(url, params=query)
+            # r = requests.post(url, params=query)
 
-            print(r.data)
+            # print(r.data)
         except:
             # Reflect the request back as a response. This will greatly aid troubleshooting...
             # so one can analyse the JSON structure against what is expected.
