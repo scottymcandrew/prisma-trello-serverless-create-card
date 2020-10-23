@@ -33,10 +33,7 @@ def prisma_trello_card(request):
 
     if isinstance(request_json, list):   # If received body is an array of JSON objects
         try:
-            print("THIS IS A LIST!")
             for counter, value in enumerate(request_json):
-                print("WE ARE IN A FOR LOOP! HERE IS THE COUNTER...... ")
-                print(counter)
                 account_name = request_json[counter]["accountName"]
                 severity = request_json[counter]["severity"]
                 rule_name = request_json[counter]["alertRuleName"]
@@ -65,11 +62,7 @@ def prisma_trello_card(request):
                     'desc': desc
                 }
 
-                r = http.request(
-                    'POST',
-                    url,
-                    fields=query)
-
+                r = http.request('POST', url, fields=query)
                 print(r.data)
 
         except:
@@ -85,7 +78,6 @@ def prisma_trello_card(request):
             }
     else:   # If received body is a single JSON object
         try:
-            print("THIS IS **NOT** A LIST")
             account_name = request_json["accountName"]
             severity = request_json["severity"]
             rule_name = request_json["alertRuleName"]
@@ -114,11 +106,7 @@ def prisma_trello_card(request):
                 'desc': desc
             }
 
-            r = http.request(
-                'POST',
-                url,
-                fields=query)
-
+            r = http.request('POST', url, fields=query)
             print(r.data)
         except:
             # Reflect the request back as a response. This will greatly aid troubleshooting...
