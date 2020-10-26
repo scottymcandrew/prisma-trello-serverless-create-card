@@ -1,4 +1,4 @@
-# prisma-trello-lambda-create-card
+# prisma-trello-serverless-create-card
 
 These Python scripts are to allow the sending of Prisma Cloud alerts (in JSON format) to Trello to create a card.
 
@@ -8,7 +8,7 @@ In this current version of the repo, there is a function for Lambda and GCP Func
 
 # Setup instructions
 
-1. Create a new Lambda function on AWS using Python 3.x. Use the code in this repo.
+1. Create a new Lambda function on AWS, or GCP Function, using Python 3.x. Use the code in this repo.
 2. Add the trello "key", "token" and "idList" environment variables. The latter identifies the list where the card will be created.
 3. Add an API Gateway Trigger. If selecting an HTTP API, then an API key can not be configured (it will be open). If you create a REST API you can specify a key, of which will be referenced as an HTTP header of "x-api-key".
 4. **Optional** Test API with a tool such as Postman. In this repo is a sample Prisma Alert JSON.
