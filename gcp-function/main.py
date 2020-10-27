@@ -13,19 +13,17 @@ def prisma_trello_card(request):
         os.environ.get("TRELLO_TOKEN_SECRET"): "tbc",
         os.environ.get("TRELLO_IDLIST_SECRET"): "tbc"
     }
-
     # Get the current Project ID using reserved env variable. This should be changed if secrets exist in diff project
     # GCP_PROJECT appears to only work with some code versions (e.g. Python 3.7 and NOT 3.8!
     # project_id = os.environ.get("GCP_PROJECT")
     project_id = os.environ.get("MY_SECRETS_PROJECT")
-
-    now = datetime.now()
-    date_time = now.strftime("%Y/%m/%d, %H:%M:%S")
-
     for x in secrets_dict:
         secret_request = {"name": f"projects/{project_id}/secrets/{x}/versions/latest"}
         secret_response = secret_client.access_secret_version(secret_request)
         secrets_dict[x] = secret_response.payload.data.decode("UTF-8")
+
+    now = datetime.now()
+    date_time = now.strftime("%Y/%m/%d, %H:%M:%S")
 
     http = urllib3.PoolManager()
     url = "https://api.trello.com/1/cards"
