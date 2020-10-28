@@ -5,7 +5,16 @@ from google.cloud import secretmanager
 
 
 def prisma_trello_card(request):
-    # Start by grabbing the required secrets from GCP Secrets Manager
+    # Test if special HTTP header and auth key exists. This is required because GCP does not allow configuring API key
+    # on HTTP Triggers. Full IAM security is required, which is fine when the client can request a JWT. Our source
+    # webhook can NOT. This is the same as an API key but just implemented in this code.
+    request_headers = request.headers
+    if not request_headers["PRISMA-WEBHOOK-API-KEY"] == os.environ.get("PRISMA_WEBHOOK_API_KEY"):
+        return {
+            'statusCode': 401
+        }
+
+    # Grab the required secrets from GCP Secrets Manager
     secret_client = secretmanager.SecretManagerServiceClient()
     secrets_dict = {
         # Use ENV variables to grab the name of the GCP secret and initialise a dict
@@ -27,21 +36,21 @@ def prisma_trello_card(request):
 
     http = urllib3.PoolManager()
     url = "https://api.trello.com/1/cards"
-    request_json = request.get_json("body")
+    request_json_body = request.get_json("body")
 
-    if not isinstance(request_json, list):  # Is this a single JSON object (dict)
-        request_json = [request_json]  # Place into a list
+    if not isinstance(request_json_body, list):  # Is this a single JSON object (dict)
+        request_json_body = [request_json_body]  # Place into a list
 
     try:
-        for counter, value in enumerate(request_json):
-            account_name = request_json[counter]["accountName"]
-            severity = request_json[counter]["severity"]
-            rule_name = request_json[counter]["alertRuleName"]
-            resource_id = request_json[counter]["resourceId"]
-            policy_desc = request_json[counter]["policyDescription"]
-            cloud_resource_type = request_json[counter]["resourceCloudService"]
-            cloud_type = request_json[counter]["cloudType"]
-            prisma_alert_url = request_json[counter]["callbackUrl"]
+        for counter, value in enumerate(request_json_body):
+            account_name = request_json_body[counter]["accountName"]
+            severity = request_json_body[counter]["severity"]
+            rule_name = request_json_body[counter]["alertRuleName"]
+            resource_id = request_json_body[counter]["resourceId"]
+            policy_desc = request_json_body[counter]["policyDescription"]
+            cloud_resource_type = request_json_body[counter]["resourceCloudService"]
+            cloud_type = request_json_body[counter]["cloudType"]
+            prisma_alert_url = request_json_body[counter]["callbackUrl"]
 
             # Gather key pieces of info from Prisma Alert JSON
             # name given to the card (title)
@@ -74,7 +83,7 @@ def prisma_trello_card(request):
             "headers": {
                 "Content-Type": "application/json"
             },
-            "body": request_json
+            "body": request_json_body
         }
 
     return {
